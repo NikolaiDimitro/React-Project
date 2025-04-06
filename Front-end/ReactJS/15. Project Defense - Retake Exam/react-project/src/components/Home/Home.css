@@ -65,41 +65,157 @@
     color: #333;
 }
 
-.books-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.popular-book-section {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
     gap: 2rem;
-    padding: 0 2rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.book-section {
+.popular-book-rank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 80px;
+    background: #3498db;
+    color: white;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.rank-number {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.rank-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.popular-book-content {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+}
+
+.popular-book-image {
+    flex: 0 0 200px;
+}
+
+.popular-book-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popular-book-info {
+    flex: 1;
+}
+
+.popular-book-info h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.popular-book-info p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.popular-book-info .author {
+    font-weight: 500;
+    color: #3498db;
+}
+
+.popular-book-info .category {
+    font-style: italic;
+}
+
+.popular-book-info .description {
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+.book-stats {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+.books-section {
+    margin-bottom: 3rem;
     background: #fff;
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.book-section h3 {
+.books-section h3 {
     text-align: center;
-    margin-bottom: 1rem;
-    color: #444;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
 }
 
 .book-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
     text-align: center;
+    padding: 1rem;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .book-card img {
     width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 5px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 4px;
     margin-bottom: 1rem;
 }
 
 .book-card h4 {
+    font-size: 1.2rem;
     margin: 0.5rem 0;
-    color: #333;
+    color: #2c3e50;
 }
 
 .book-card p {
@@ -171,7 +287,7 @@
 
 @media (max-width: 768px) {
     .home-container {
-        padding: 20px 10px;
+        padding: 1rem;
     }
 
     .home-container h1 {
@@ -188,5 +304,31 @@
     
     .popular-books h2 {
         font-size: 1.5rem;
+    }
+
+    .book-card img {
+        height: 250px;
+    }
+
+    .popular-book-section {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .popular-book-rank {
+        margin-bottom: 1rem;
+    }
+
+    .popular-book-content {
+        flex-direction: column;
+    }
+
+    .popular-book-image {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .popular-book-image img {
+        height: 250px;
     }
 } 
