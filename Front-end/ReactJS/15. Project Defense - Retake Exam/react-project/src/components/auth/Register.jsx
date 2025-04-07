@@ -5,7 +5,7 @@ import './Register.css';
 
 const Register = () => {
     const navigate = useNavigate();
-    const { register } = useAuth();
+    const { signup } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -73,11 +73,11 @@ const Register = () => {
         setLoading(true);
 
         try {
-            await register(formData.email, formData.password);
+            await signup(formData.email, formData.password);
             navigate('/catalog');
         } catch (err) {
             console.error('Registration error:', err);
-            setError('Грешка при регистрацията. Моля, опитайте отново.');
+            setError(err.message);
         } finally {
             setLoading(false);
         }
