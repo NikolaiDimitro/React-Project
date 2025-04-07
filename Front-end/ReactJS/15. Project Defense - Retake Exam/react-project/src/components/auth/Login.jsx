@@ -64,7 +64,7 @@ const Login = () => {
 
         try {
             await login(formData.email, formData.password);
-            navigate('/catalog');
+            navigate('/');
         } catch (err) {
             console.error('Login error:', err);
             setError('Невалиден имейл или парола. Моля, опитайте отново.');

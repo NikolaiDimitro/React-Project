@@ -103,6 +103,16 @@ const AddBook = () => {
             return;
         }
 
+        if (isNaN(formData.year) || formData.year < 0) {
+            setError('Годината трябва да е положително число');
+            return;
+        }
+
+        if (formData.year > 2025) {
+            setError('Годината не може да бъде по-голяма от 2025');
+            return;
+        }
+
         if (!formData.description.trim()) {
             setError('Описанието е задължително');
             return;

@@ -74,6 +74,21 @@ export default function EditBook() {
             return;
         }
 
+        // Валидация на годината
+        if (!formData.year) {
+            setError('Годината е задължителна');
+            setLoading(false);
+            return;
+        } else if (isNaN(formData.year) || formData.year < 0) {
+            setError('Годината трябва да е положително число');
+            setLoading(false);
+            return;
+        } else if (formData.year > 2025) {
+            setError('Годината не може да бъде по-голяма от 2025');
+            setLoading(false);
+            return;
+        }
+
         try {
             await updateBook(id, formData);
             navigate(`/books/${id}`);
