@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         };
     }, []);
 
-    const signup = async (email, password) => {
+    const register = async (email, password) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             return userCredential.user;
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         currentUser,
         loading,
-        signup,
+        register,
         login,
         logout,
         updatePassword: changePassword
