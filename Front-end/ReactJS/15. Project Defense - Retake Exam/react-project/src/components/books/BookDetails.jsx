@@ -43,10 +43,8 @@ const BookDetails = () => {
     }, [id, currentUser]);
 
     const handleLike = async () => {
-        if (!currentUser || !currentUser.uid) {
-            if (window.confirm('Моля, влезте в профила си, за да харесате книга. Искате ли да бъдете пренасочени към страницата за вход?')) {
-                navigate('/login');
-            }
+        if (!currentUser) {
+            navigate('/login');
             return;
         }
 
