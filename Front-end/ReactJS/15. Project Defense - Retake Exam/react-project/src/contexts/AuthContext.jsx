@@ -3,47 +3,101 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
-    onAuthStateChanged
+    onAuthStateChanged,
+    updatePassword
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
-    return useContext(AuthContext);
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        console.log('AuthProvider mounted');
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
+            console.log('Auth state changed:', user);
+            setCurrentUser(user);
             setLoading(false);
         });
 
-        return unsubscribe;
+        return () => {
+            console.log('AuthProvider unmounted');
+            unsubscribe();
+        };
     }, []);
 
-    const signup = (email, password) => {
-        return createUserWithEmailAndPassword(auth, email, password);
+    const signup = async (email, password) => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            return userCredential.user;
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw new Error(getErrorMessage(error.code));
+        }
     };
 
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
+    const login = async (email, password) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            return userCredential.user;
+        } catch (error) {
+            console.error('Login error:', error);
+            throw new Error(getErrorMessage(error.code));
+        }
     };
 
-    const logout = () => {
-        return signOut(auth);
+    const logout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Logout error:', error);
+            throw new Error('Грешка при изход. Моля, опитайте отново.');
+        }
+    };
+
+    const changePassword = (newPassword) => {
+        return updatePassword(auth.currentUser, newPassword);
+    };
+
+    const getErrorMessage = (errorCode) => {
+        switch (errorCode) {
+            case 'auth/email-already-in-use':
+                return 'Този имейл вече е регистриран.';
+            case 'auth/invalid-email':
+                return 'Невалиден имейл адрес.';
+            case 'auth/operation-not-allowed':
+                return 'Регистрацията е временно спряна.';
+            case 'auth/weak-password':
+                return 'Паролата е твърде слаба. Моля, използвайте поне 6 символа.';
+            case 'auth/user-not-found':
+                return 'Потребител с този имейл не съществува.';
+            case 'auth/wrong-password':
+                return 'Грешна парола.';
+            default:
+                return 'Възникна грешка. Моля, опитайте отново.';
+        }
     };
 
     const value = {
-        user,
+        currentUser,
+        loading,
         signup,
         login,
-        logout
+        logout,
+        updatePassword: changePassword
     };
+
+    console.log('AuthProvider rendering with currentUser:', currentUser);
 
     return (
         <AuthContext.Provider value={value}>

@@ -38,13 +38,20 @@
 }
 
 .app {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .main-content {
+    margin-top: 80px;
+    padding: 2rem;
     flex: 1;
-    padding-top: 80px; /* За да не се прикрива от фиксирания header */
-    padding-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-top: 140px;
+        padding: 1rem;
+    }
 }

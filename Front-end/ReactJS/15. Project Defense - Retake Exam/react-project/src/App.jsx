@@ -1,45 +1,39 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Navigation } from './components/navigation/Navigation';
-import { Home } from './components/Home/Home';
-import { Catalog } from './components/catalog/Catalog';
-import { Search } from './components/search/Search';
-import { Login } from './components/auth/Login';
-import { Register } from './components/auth/Register';
-import { AddBook } from './components/books/AddBook';
-import { EditBook } from './components/books/EditBook';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { BookOwnerRoute } from './components/books/BookOwnerRoute';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import Navigation from './components/navigation/Navigation';
+import Home from './components/home/Home';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import AddBook from './components/books/AddBook';
+import BookDetails from './components/books/BookDetails';
+import EditBook from './components/books/EditBook';
+import Search from './components/search/Search';
+import Catalog from './components/catalog/Catalog';
+import Profile from './components/profile/Profile';
 import './App.css';
 
 function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Navigation />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    
-                    <Route path="/books/add" element={
-                        <ProtectedRoute>
-                            <AddBook />
-                        </ProtectedRoute>
-                    } />
-                    
-                    <Route path="/books/edit/:id" element={
-                        <ProtectedRoute>
-                            <BookOwnerRoute>
-                                <EditBook />
-                            </BookOwnerRoute>
-                        </ProtectedRoute>
-                    } />
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+        <Router>
+            <AuthProvider>
+                <div className="app">
+                    <Navigation />
+                    <main className="main-content">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/add-book" element={<AddBook />} />
+                            <Route path="/books/:id" element={<BookDetails />} />
+                            <Route path="/books/:id/edit" element={<EditBook />} />
+                            <Route path="/search" element={<Search />} />
+                            <Route path="/catalog" element={<Catalog />} />
+                            <Route path="/profile" element={<Profile />} />
+                        </Routes>
+                    </main>
+                </div>
+            </AuthProvider>
+        </Router>
     );
 }
 

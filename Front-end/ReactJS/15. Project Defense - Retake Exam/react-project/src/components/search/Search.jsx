@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getAllBooks } from '../../services/bookService';
+import { BOOK_GENRES } from '../../constants/genres';
+import BookCard from '../books/BookCard';
 import './Search.css';
 
 export const Search = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedGenre, setSelectedGenre] = useState('');
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -23,17 +25,15 @@ export const Search = () => {
         fetchBooks();
     }, []);
 
-    const categories = [...new Set(books.map(book => book.category))];
-
     const filteredBooks = books.filter(book => {
         const matchesSearch = 
             book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
             book.description.toLowerCase().includes(searchTerm.toLowerCase());
         
-        const matchesCategory = selectedCategory ? book.category === selectedCategory : true;
+        const matchesGenre = selectedGenre ? book.genre === selectedGenre : true;
         
-        return matchesSearch && matchesCategory;
+        return matchesSearch && matchesGenre;
     });
 
     if (loading) {
@@ -53,15 +53,15 @@ export const Search = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <div className="category-filter">
+                    <div className="genre-filter">
                         <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            value={selectedGenre}
+                            onChange={(e) => setSelectedGenre(e.target.value)}
                         >
-                            <option value="">Всички категории</option>
-                            {categories.map(category => (
-                                <option key={category} value={category}>
-                                    {category}
+                            <option value="">Всички жанрове</option>
+                            {BOOK_GENRES.map(genre => (
+                                <option key={genre} value={genre}>
+                                    {genre}
                                 </option>
                             ))}
                         </select>
@@ -73,20 +73,7 @@ export const Search = () => {
                 <h2>Резултати: {filteredBooks.length} книги</h2>
                 <div className="books-grid">
                     {filteredBooks.map((book) => (
-                        <div key={book.id} className="book-card">
-                            <div className="book-image">
-                                <img src={book.imageUrl || "/images/book-placeholder.jpg"} alt={book.title} />
-                            </div>
-                            <div className="book-info">
-                                <h3>{book.title}</h3>
-                                <p className="author">Автор: {book.author}</p>
-                                <p className="category">Категория: {book.category}</p>
-                                <p className="description">{book.description}</p>
-                                <div className="book-stats">
-                                    <span className="likes">❤️ {book.likes || 0} харесвания</span>
-                                </div>
-                            </div>
-                        </div>
+                        <BookCard key={book.id} book={book} />
                     ))}
                 </div>
             </div>

@@ -1,40 +1,47 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getBookById, updateBook } from '../../services/bookService';
+import { BOOK_GENRES } from '../../constants/genres';
 import './EditBook.css';
 
-export const EditBook = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
+export default function EditBook() {
     const [formData, setFormData] = useState({
         title: '',
         author: '',
+        genre: BOOK_GENRES[0],
+        year: '',
         description: '',
-        imageUrl: '',
-        price: '',
-        genre: ''
+        imageUrl: ''
     });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchBook = async () => {
             try {
-                const docRef = doc(db, 'books', id);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    setFormData(docSnap.data());
-                } else {
-                    console.log('Книгата не беше намерена!');
-                    navigate('/catalog');
+                const book = await getBookById(id);
+                if (book) {
+                    setFormData({
+                        title: book.title || '',
+                        author: book.author || '',
+                        genre: book.genre || BOOK_GENRES[0],
+                        year: book.year || '',
+                        description: book.description || '',
+                        imageUrl: book.imageUrl || ''
+                    });
                 }
-            } catch (error) {
-                console.error('Грешка при зареждане на книгата:', error);
+            } catch (err) {
+                setError('Грешка при зареждането на книгата');
+                console.error(err);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchBook();
-    }, [id, navigate]);
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -46,22 +53,49 @@ export const EditBook = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        if (!formData.title.trim()) {
+            setError('Заглавието е задължително');
+            setLoading(false);
+            return;
+        }
+
+        if (!formData.author.trim()) {
+            setError('Авторът е задължителен');
+            setLoading(false);
+            return;
+        }
+
+        if (/^\d+$/.test(formData.author.trim())) {
+            setError('Името на автора не може да съдържа само цифри');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const docRef = doc(db, 'books', id);
-            await updateDoc(docRef, formData);
-            console.log('Книгата беше обновена успешно!');
-            navigate('/catalog');
+            await updateBook(id, formData);
+            navigate(`/books/${id}`);
         } catch (error) {
-            console.error('Грешка при обновяване на книгата:', error);
+            setError('Грешка при редактирането на книгата');
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
+
+    if (loading && !formData.title) {
+        return <div className="loading">Зареждане...</div>;
+    }
 
     return (
         <div className="edit-book-container">
             <h2>Редактиране на книга</h2>
+            {error && <div className="error">{error}</div>}
             <form onSubmit={handleSubmit} className="edit-book-form">
                 <div className="form-group">
-                    <label htmlFor="title">Заглавие:</label>
+                    <label htmlFor="title">Заглавие</label>
                     <input
                         type="text"
                         id="title"
@@ -73,7 +107,7 @@ export const EditBook = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="author">Автор:</label>
+                    <label htmlFor="author">Автор</label>
                     <input
                         type="text"
                         id="author"
@@ -85,7 +119,36 @@ export const EditBook = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="description">Описание:</label>
+                    <label htmlFor="genre">Жанр</label>
+                    <select
+                        id="genre"
+                        name="genre"
+                        value={formData.genre}
+                        onChange={handleChange}
+                        required
+                    >
+                        {BOOK_GENRES.map(genre => (
+                            <option key={genre} value={genre}>
+                                {genre}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="year">Година</label>
+                    <input
+                        type="number"
+                        id="year"
+                        name="year"
+                        value={formData.year}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="description">Описание</label>
                     <textarea
                         id="description"
                         name="description"
@@ -96,7 +159,7 @@ export const EditBook = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="imageUrl">URL на снимката:</label>
+                    <label htmlFor="imageUrl">URL на снимка</label>
                     <input
                         type="url"
                         id="imageUrl"
@@ -107,39 +170,19 @@ export const EditBook = () => {
                     />
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="price">Цена:</label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                        step="0.01"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="genre">Жанр:</label>
-                    <input
-                        type="text"
-                        id="genre"
-                        name="genre"
-                        value={formData.genre}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
                 <div className="form-actions">
-                    <button type="submit" className="submit-btn">Запази промените</button>
-                    <button type="button" className="cancel-btn" onClick={() => navigate('/catalog')}>Отказ</button>
+                    <button type="submit" className="save-btn" disabled={loading}>
+                        {loading ? 'Запазване...' : 'Запази промените'}
+                    </button>
+                    <button 
+                        type="button" 
+                        className="cancel-btn"
+                        onClick={() => navigate(`/books/${id}`)}
+                    >
+                        Отказ
+                    </button>
                 </div>
             </form>
         </div>
     );
-};
-
-export default EditBook; 
+} 

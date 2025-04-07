@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import './Auth.css';
+import './Register.css';
 
-export const Register = () => {
+const Register = () => {
+    const navigate = useNavigate();
+    const { register } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -11,93 +13,138 @@ export const Register = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signup } = useAuth();
-    const navigate = useNavigate();
+    const [validationErrors, setValidationErrors] = useState({});
+
+    const validateForm = () => {
+        const errors = {};
+
+        // Валидация на имейл
+        if (!formData.email) {
+            errors.email = 'Имейлът е задължителен';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = 'Моля, въведете валиден имейл адрес (пример: user@example.com)';
+        } else if (formData.email.length > 100) {
+            errors.email = 'Имейлът не може да бъде по-дълъг от 100 символа';
+        }
+
+        // Валидация на парола
+        if (!formData.password) {
+            errors.password = 'Паролата е задължителна';
+        } else if (formData.password.length < 6) {
+            errors.password = 'Паролата трябва да е поне 6 символа';
+        } else if (formData.password.length > 50) {
+            errors.password = 'Паролата не може да бъде по-дълга от 50 символа';
+        }
+
+        // Валидация на потвърждение на парола
+        if (!formData.confirmPassword) {
+            errors.confirmPassword = 'Потвърждението на паролата е задължително';
+        } else if (formData.password !== formData.confirmPassword) {
+            errors.confirmPassword = 'Паролите не съвпадат';
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // Изчистваме грешката за конкретното поле при промяна
+        if (validationErrors[name]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        if (formData.password !== formData.confirmPassword) {
-            return setError('Паролите не съвпадат');
-        }
-
-        if (formData.password.length < 6) {
-            return setError('Паролата трябва да е поне 6 символа');
+        if (!validateForm()) {
+            return;
         }
 
         setLoading(true);
 
         try {
-            await signup(formData.email, formData.password);
-            navigate('/');
-        } catch (error) {
-            setError('Грешка при регистрация. Моля, опитайте отново.');
+            await register(formData.email, formData.password);
+            navigate('/catalog');
+        } catch (err) {
+            console.error('Registration error:', err);
+            setError('Грешка при регистрацията. Моля, опитайте отново.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-form">
-                <h2>Регистрация</h2>
-                {error && <div className="error-message">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email">Имейл</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Въведете вашия имейл"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Парола</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Въведете вашата парола"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">Потвърди парола</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="Потвърдете вашата парола"
-                            required
-                        />
-                    </div>
+        <div className="register-container">
+            <h2>Регистрация</h2>
+            {error && <div className="error">{error}</div>}
+            <form onSubmit={handleSubmit} className="register-form">
+                <div className="form-group">
+                    <label htmlFor="email">Имейл</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={validationErrors.email ? 'error-input' : ''}
+                    />
+                    {validationErrors.email && (
+                        <span className="field-error">{validationErrors.email}</span>
+                    )}
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="password">Парола</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className={validationErrors.password ? 'error-input' : ''}
+                    />
+                    {validationErrors.password && (
+                        <span className="field-error">{validationErrors.password}</span>
+                    )}
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="confirmPassword">Потвърди парола</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className={validationErrors.confirmPassword ? 'error-input' : ''}
+                    />
+                    {validationErrors.confirmPassword && (
+                        <span className="field-error">{validationErrors.confirmPassword}</span>
+                    )}
+                </div>
+
+                <div className="form-actions">
                     <button 
                         type="submit" 
-                        className="auth-button"
+                        className="register-button"
                         disabled={loading}
                     >
-                        {loading ? 'Регистриране...' : 'Регистрация'}
+                        {loading ? 'Регистрация...' : 'Регистрация'}
                     </button>
-                </form>
-                <p className="auth-link">
-                    Вече имате акаунт? <Link to="/login">Влезте</Link>
-                </p>
+                </div>
+            </form>
+            <div className="login-link">
+                Вече имате акаунт? <Link to="/login">Вход</Link>
             </div>
         </div>
     );
