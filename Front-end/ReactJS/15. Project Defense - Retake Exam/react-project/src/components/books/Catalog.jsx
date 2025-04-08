@@ -12,17 +12,17 @@ const Catalog = () => {
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const allBooks = await getAllBooks();
-                // Сортиране на книгите по дата на създаване в низходящ ред
-                const sortedBooks = allBooks.sort((a, b) => {
-                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                const data = await getAllBooks();
+                // Сортираме книгите по дата на създаване в низходящ ред (най-новите първи)
+                const sortedBooks = data.sort((a, b) => {
+                    const dateA = new Date(a.createdAt).getTime();
+                    const dateB = new Date(b.createdAt).getTime();
                     return dateB - dateA;
                 });
                 setBooks(sortedBooks);
             } catch (err) {
+                console.error('Error fetching books:', err);
                 setError('Грешка при зареждането на книгите');
-                console.error(err);
             } finally {
                 setLoading(false);
             }

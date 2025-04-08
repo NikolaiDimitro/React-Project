@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import Loading from '../common/Loading';
 import './ChangePassword.css';
 
 const ChangePassword = () => {
@@ -18,12 +19,21 @@ const ChangePassword = () => {
         setSuccess('');
         setLoading(true);
 
+        // Проверка дали новата парола съвпада с текущата
+        if (newPassword === currentPassword) {
+            setError('Новата парола не може да бъде същата като текущата');
+            setLoading(false);
+            return;
+        }
+
+        // Проверка дали новите пароли съвпадат
         if (newPassword !== confirmPassword) {
             setError('Новите пароли не съвпадат');
             setLoading(false);
             return;
         }
 
+        // Проверка за минимална дължина
         if (newPassword.length < 6) {
             setError('Паролата трябва да бъде поне 6 символа');
             setLoading(false);
@@ -59,6 +69,10 @@ const ChangePassword = () => {
             setLoading(false);
         }
     };
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <div className="change-password-container">
@@ -98,10 +112,10 @@ const ChangePassword = () => {
                 </div>
                 <button 
                     type="submit" 
-                    className="change-password-button"
                     disabled={loading}
+                    className="change-password-button"
                 >
-                    {loading ? 'Зареждане...' : 'Промени парола'}
+                    {loading ? 'Зареждане...' : 'Промени паролата'}
                 </button>
             </form>
         </div>

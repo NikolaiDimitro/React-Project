@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBookById, updateBook } from '../../services/bookService';
 import { BOOK_GENRES } from '../../constants/genres';
+import { useToast } from '../../contexts/ToastContext';
+import Loading from '../common/Loading';
 import './EditBook.css';
 
 export default function EditBook() {
@@ -14,9 +16,9 @@ export default function EditBook() {
         imageUrl: ''
     });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -33,7 +35,7 @@ export default function EditBook() {
                     });
                 }
             } catch (err) {
-                setError('Грешка при зареждането на книгата');
+                showToast('Грешка при зареждането на книгата', 'error');
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -41,7 +43,7 @@ export default function EditBook() {
         };
 
         fetchBook();
-    }, [id]);
+    }, [id, showToast]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,46 +56,46 @@ export default function EditBook() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         if (!formData.title.trim()) {
-            setError('Заглавието е задължително');
+            showToast('Заглавието е задължително', 'error');
             setLoading(false);
             return;
         }
 
         if (!formData.author.trim()) {
-            setError('Авторът е задължителен');
+            showToast('Авторът е задължителен', 'error');
             setLoading(false);
             return;
         }
 
         if (/^\d+$/.test(formData.author.trim())) {
-            setError('Името на автора не може да съдържа само цифри');
+            showToast('Името на автора не може да съдържа само цифри', 'error');
             setLoading(false);
             return;
         }
 
         // Валидация на годината
         if (!formData.year) {
-            setError('Годината е задължителна');
+            showToast('Годината е задължителна', 'error');
             setLoading(false);
             return;
         } else if (isNaN(formData.year) || formData.year < 0) {
-            setError('Годината трябва да е положително число');
+            showToast('Годината трябва да е положително число', 'error');
             setLoading(false);
             return;
         } else if (formData.year > 2025) {
-            setError('Годината не може да бъде по-голяма от 2025');
+            showToast('Годината не може да бъде по-голяма от 2025', 'error');
             setLoading(false);
             return;
         }
 
         try {
             await updateBook(id, formData);
+            showToast('Книгата беше успешно редактирана', 'success');
             navigate(`/books/${id}`);
         } catch (error) {
-            setError('Грешка при редактирането на книгата');
+            showToast('Грешка при редактирането на книгата', 'error');
             console.error(error);
         } finally {
             setLoading(false);
@@ -101,13 +103,12 @@ export default function EditBook() {
     };
 
     if (loading && !formData.title) {
-        return <div className="loading">Зареждане...</div>;
+        return <Loading />;
     }
 
     return (
         <div className="edit-book-container">
             <h2>Редактиране на книга</h2>
-            {error && <div className="error">{error}</div>}
             <form onSubmit={handleSubmit} className="edit-book-form">
                 <div className="form-group">
                     <label htmlFor="title">Заглавие</label>

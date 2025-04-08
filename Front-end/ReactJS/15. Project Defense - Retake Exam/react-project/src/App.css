@@ -43,15 +43,20 @@
     flex-direction: column;
 }
 
-.main-content {
-    margin-top: 80px;
-    padding: 2rem;
+main {
     flex: 1;
+    padding-top: 80px;
+    padding-bottom: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 @media (max-width: 768px) {
-    .main-content {
-        margin-top: 140px;
+    main {
+        padding-top: 140px;
         padding: 1rem;
     }
 }

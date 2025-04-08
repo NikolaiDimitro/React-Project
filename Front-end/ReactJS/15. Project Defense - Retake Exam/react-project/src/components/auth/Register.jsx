@@ -74,7 +74,7 @@ const Register = () => {
 
         try {
             await register(formData.email, formData.password);
-            navigate('/catalog');
+            navigate('/');
         } catch (err) {
             console.error('Registration error:', err);
             setError(err.message);
