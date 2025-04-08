@@ -68,7 +68,7 @@ react-project/
 ```
 
 ## Автор
-[Nikolai Dimitrov]
+Nikolai Dimitrov
 
 ## Лиценз
 MIT
