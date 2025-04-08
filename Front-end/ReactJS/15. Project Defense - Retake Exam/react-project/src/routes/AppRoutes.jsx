@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from '../guards/PrivateRoute';
 import PublicRoute from '../guards/PublicRoute';
 import Home from '../components/Home/Home';
@@ -9,8 +9,16 @@ import AddBook from '../components/books/Add Book/AddBook';
 import BookDetails from '../components/Books/BookDetails/BookDetails';
 import EditBook from '../components/books/editbook/EditBook';
 import Profile from '../components/Profile/Profile';
-import ChangePassword from '../components/profile/ChangePassword';
+import ChangePassword from '../components/Profile/ChangePassword';
 import Search from '../components/Search/Search';
+import NotFound from '../components/NotFound/NotFound';
+import { useAuth } from '../contexts/AuthContext';
+
+const Logout = () => {
+    const { logout } = useAuth();
+    logout();
+    return <Navigate to="/" />;
+};
 
 const AppRoutes = () => {
     return (
@@ -60,6 +68,14 @@ const AppRoutes = () => {
                     <ChangePassword />
                 </PrivateRoute>
             } />
+
+            <Route path="/logout" element={
+                <PrivateRoute>
+                    <Logout />
+                </PrivateRoute>
+            } />
+
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };
