@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllBooks } from '../../services/bookService';
 import { BOOK_GENRES } from '../../constants/genres';
-import BookCard from '../books/BookCard';
+import BookCard from '../Books/BooksCard/BookCard';
 import './Search.css';
 
 export const Search = () => {

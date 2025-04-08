@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getBookById, updateBook } from '../../services/bookService';
-import { BOOK_GENRES } from '../../constants/genres';
-import { useToast } from '../../contexts/ToastContext';
-import Loading from '../common/Loading';
+import { getBookById, updateBook } from '../../../Services/bookService';
+import { BOOK_GENRES } from '../../../Constants/genres';
+import { useToast } from '../../../Contexts/ToastContext';
+import Loading from '../../common/Loading';
 import './EditBook.css';
 
 export default function EditBook() {

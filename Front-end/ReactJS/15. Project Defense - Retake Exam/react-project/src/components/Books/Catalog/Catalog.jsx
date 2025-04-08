@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllBooks } from '../../services/bookService';
-import BookCard from './BookCard';
+import { getAllBooks } from '../../../Services/bookService';
+import BookCard from '../BooksCard/BookCard';
 import './Catalog.css';
 
 const Catalog = () => {

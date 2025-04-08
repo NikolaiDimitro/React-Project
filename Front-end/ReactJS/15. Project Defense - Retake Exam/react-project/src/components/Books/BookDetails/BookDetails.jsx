@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { getBookById, isBookLiked, toggleBookLike, updateBookLikes, deleteBook } from '../../services/bookService';
+import { useAuth } from '../../../contexts/AuthContext';
+import { getBookById, isBookLiked, toggleBookLike, updateBookLikes, deleteBook } from '../../../Services/bookService';
 import './BookDetails.css';
 
 const BookDetails = () => {

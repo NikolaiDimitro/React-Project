@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getAllBooks } from '../../services/bookService';
-import BookCard from '../books/BookCard';
+import { getAllBooks } from '../../Services/bookService';
+import BookCard from '../Books/BooksCard/BookCard';
 import './Home.css';
 
 export const Home = () => {

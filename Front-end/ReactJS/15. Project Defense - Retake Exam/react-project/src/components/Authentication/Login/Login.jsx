@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import './Register.css';
+import { useAuth } from '../../../contexts/AuthContext';
+import './Login.css';
 
-const Register = () => {
+const Login = () => {
     const navigate = useNavigate();
-    const { register } = useAuth();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -30,17 +29,8 @@ const Register = () => {
         // Валидация на парола
         if (!formData.password) {
             errors.password = 'Паролата е задължителна';
-        } else if (formData.password.length < 6) {
-            errors.password = 'Паролата трябва да е поне 6 символа';
         } else if (formData.password.length > 50) {
             errors.password = 'Паролата не може да бъде по-дълга от 50 символа';
-        }
-
-        // Валидация на потвърждение на парола
-        if (!formData.confirmPassword) {
-            errors.confirmPassword = 'Потвърждението на паролата е задължително';
-        } else if (formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Паролите не съвпадат';
         }
 
         setValidationErrors(errors);
@@ -73,21 +63,21 @@ const Register = () => {
         setLoading(true);
 
         try {
-            await register(formData.email, formData.password);
+            await login(formData.email, formData.password);
             navigate('/');
         } catch (err) {
-            console.error('Registration error:', err);
-            setError(err.message);
+            console.error('Login error:', err);
+            setError('Невалиден имейл или парола. Моля, опитайте отново.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="register-container">
-            <h2>Регистрация</h2>
+        <div className="login-container">
+            <h2>Вход</h2>
             {error && <div className="error">{error}</div>}
-            <form onSubmit={handleSubmit} className="register-form">
+            <form onSubmit={handleSubmit} className="login-form">
                 <div className="form-group">
                     <label htmlFor="email">Имейл</label>
                     <input
@@ -118,36 +108,21 @@ const Register = () => {
                     )}
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="confirmPassword">Потвърди парола</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className={validationErrors.confirmPassword ? 'error-input' : ''}
-                    />
-                    {validationErrors.confirmPassword && (
-                        <span className="field-error">{validationErrors.confirmPassword}</span>
-                    )}
-                </div>
-
                 <div className="form-actions">
                     <button 
                         type="submit" 
-                        className="register-button"
+                        className="login-button"
                         disabled={loading}
                     >
-                        {loading ? 'Регистрация...' : 'Регистрация'}
+                        {loading ? 'Влизане...' : 'Вход'}
                     </button>
                 </div>
             </form>
-            <div className="login-link">
-                Вече имате акаунт? <Link to="/login">Вход</Link>
+            <div className="register-link">
+                Нямате акаунт? <Link to="/register">Регистрация</Link>
             </div>
         </div>
     );
 };
 
-export default Register; 
+export default Login; 

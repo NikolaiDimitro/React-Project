@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../../contexts/ToastContext';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { useAsync } from '../../hooks/useAsync';
-import { createBook } from '../../services/bookService';
-import { BOOK_GENRES } from '../../config/genres';
-import { bookValidationRules } from '../../config/validationRules';
-import Loading from '../common/Loading';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useToast } from '../../../contexts/ToastContext';
+import { useFormValidation } from '../../../hooks/useFormValidation';
+import { useAsync } from '../../../hooks/useAsync';
+import { BOOK_GENRES } from '../../../constants/genres';
+import { bookValidationRules } from '../../../config/validationRules';
+import { createBook } from '../../../services/bookService';
+import Loading from '../../../components/common/Loading';
 import './AddBook.css';
 
 const AddBook = () => {
@@ -14,7 +14,7 @@ const AddBook = () => {
     const { currentUser } = useAuth();
     const { showToast } = useToast();
 
-    const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(
+    const { formData, errors, handleChange, validateForm } = useFormValidation(
         {
             title: '',
             author: '',
@@ -73,7 +73,6 @@ const AddBook = () => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        required
                     />
                     {errors.title && <span className="error">{errors.title}</span>}
                 </div>
@@ -86,7 +85,6 @@ const AddBook = () => {
                         name="author"
                         value={formData.author}
                         onChange={handleChange}
-                        required
                     />
                     {errors.author && <span className="error">{errors.author}</span>}
                 </div>
@@ -98,12 +96,9 @@ const AddBook = () => {
                         name="genre"
                         value={formData.genre}
                         onChange={handleChange}
-                        required
                     >
                         {BOOK_GENRES.map(genre => (
-                            <option key={genre} value={genre}>
-                                {genre}
-                            </option>
+                            <option key={genre} value={genre}>{genre}</option>
                         ))}
                     </select>
                 </div>
@@ -116,7 +111,6 @@ const AddBook = () => {
                         name="year"
                         value={formData.year}
                         onChange={handleChange}
-                        required
                     />
                     {errors.year && <span className="error">{errors.year}</span>}
                 </div>
@@ -128,7 +122,6 @@ const AddBook = () => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        required
                     />
                     {errors.description && <span className="error">{errors.description}</span>}
                 </div>
@@ -141,7 +134,6 @@ const AddBook = () => {
                         name="imageUrl"
                         value={formData.imageUrl}
                         onChange={handleChange}
-                        required
                     />
                     {errors.imageUrl && <span className="error">{errors.imageUrl}</span>}
                 </div>

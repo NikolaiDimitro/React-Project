@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getBooksByUser } from '../../services/bookService';
-import BookCard from '../books/BookCard';
+import { getBooksByUser } from '../../Services/bookService';
+import BookCard from '../Books/BooksCard/BookCard';
 import ChangePassword from './ChangePassword';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
