@@ -27,11 +27,7 @@ const AppRoutes = () => {
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/search" element={<Search />} />
             
-            <Route path="/books/:id" element={
-                <PrivateRoute>
-                    <BookDetails />
-                </PrivateRoute>
-            } />
+            <Route path="/books/:id" element={<BookDetails />} />
             
             <Route path="/login" element={
                 <PublicRoute>
