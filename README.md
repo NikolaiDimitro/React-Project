@@ -30,42 +30,45 @@
 
 ## Инсталация
 1. Клонирайте репозиторито
-```bash
-git clone [repository-url]
-```
+   ```bash
+   git clone [repository-url]
+   ```
 
 2. Инсталирайте зависимостите
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Стартирайте приложението
-```bash
-npm start
-```
+   ```bash
+   npm start
+   ```
 
 ## Структура на проекта
-```
+
 react-project/
 ├── src/
-│   ├── components/     # React компоненти
-│   ├── contexts/       # Context API контексти
-│   ├── services/       # Firebase услуги
-│   ├── routes/         # Маршрути на приложението
-│   ├── guards/         # Route guards
-│   ├── config/         # Конфигурационни файлове
-│   ├── hooks/          # Custom React hooks
-│   ├── constants/      # Константи
-│   ├── App.jsx         # Основен компонент
-│   ├── App.css         # Стилове за App
-│   ├── index.jsx       # Входна точка
-│   └── main.jsx        # Рендериране на приложението
-├── public/             # Публични файлове
-├── .env                # Окръжение
-├── .env.example        # Пример за .env файл
-├── vite.config.js      # Vite конфигурация
-└── package.json        # Зависимости и скриптове
-```
+│ ├── components/ # React компоненти
+│ ├── contexts/ # Context API контексти
+│ ├── services/ # Firebase услуги
+│ ├── routes/ # Маршрути на приложението
+│ ├── guards/ # Route guards
+│ ├── config/ # Конфигурационни файлове
+│ ├── hooks/ # Custom React hooks
+│ ├── constants/ # Константи
+│ ├── App.jsx # Основен компонент
+│ ├── App.css # Стилове за App
+│ ├── index.jsx # Входна точка
+│ └── main.jsx # Рендериране на приложението
+├── public/ # Публични файлове
+├── .env # Окръжение
+├── .env.example # Пример за .env файл
+├── vite.config.js # Vite конфигурация
+└── package.json # Зависимости и скриптове
+
+
+## Деплойнато приложение
+- [Достъп до приложението](https://books-2cd6a.web.app)
 
 ## Автор
 Nikolai Dimitrov
